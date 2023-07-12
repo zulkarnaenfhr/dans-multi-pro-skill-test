@@ -1,0 +1,11 @@
+#CustomNavbar {
+   height: 80px;
+   background-color: #427fbe;
+   display: flex;
+   align-items: center;
+   padding: 20px;
+}
+
+#CustomNavbar > h1 {
+   color: white;
+}

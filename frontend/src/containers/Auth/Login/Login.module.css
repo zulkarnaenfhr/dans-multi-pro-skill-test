@@ -1,0 +1,69 @@
+.PageAuth-Container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   width: 100vw;
+   height: 100vh;
+   background-color: #0077c3;
+}
+
+.PageAuth-Form-Container {
+   width: 600px;
+   border: 1px solid white;
+   border-radius: 20px;
+   padding: 20px;
+   font-family: "Roboto", sans-serif;
+   color: #ffffff;
+}
+
+.PageAuth-Form-Title {
+   margin-bottom: unset;
+   font-style: normal;
+   font-weight: 700;
+   font-size: 30px;
+   line-height: 35px;
+}
+
+.PageAuth-Form > label {
+   font-style: normal;
+   font-size: 20px;
+   margin-top: 20px;
+}
+
+.PageAuth-Form > input {
+   width: 100%;
+   height: 40px;
+}
+
+.PageAuth-Form-ButtonSubmit {
+   margin-top: 20px;
+   height: 40px;
+   font-size: 20px;
+   border-radius: 10px;
+   width: 100%;
+
+   background: #4e97c2;
+   border-radius: 10px;
+   color: white;
+   border: transparent;
+   transition: all 0.3s ease-in-out;
+}
+
+.PageAuth-Form-ButtonSubmit:hover {
+   background-color: transparent;
+   border: 1px solid white;
+}
+
+.PageAuth-Form-Or {
+   text-align: center;
+   margin-top: 20px;
+   margin-bottom: 20px;
+   font-size: 20px;
+}
+
+.PageAuth-ButtonLoginGoogle {
+   height: 40px;
+   font-size: 20px;
+   border-radius: 10px;
+   width: 100%;
+}
