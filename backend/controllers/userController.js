@@ -2,10 +2,6 @@ import Users from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import dotenv from "dotenv";
-
-dotenv.config();
-
 export const getUsers = async (req, res) => {
    try {
       const users = await Users.findAll();
@@ -17,11 +13,8 @@ export const getUsers = async (req, res) => {
 
 export const registerUsers = async (req, res) => {
    let { username, password, confirmPassword } = req.body;
-   console.log(username);
-   console.log(password);
 
    const cekUsername = await Users.findAll({ where: { username: username } });
-   console.log(cekUsername);
 
    if (cekUsername.length != 0) {
       res.status(400).json({ msg: "Username already exist" });
