@@ -92,7 +92,7 @@ export const loginUser = async (req, res) => {
 
       await res.cookie("refreshToken", refreshToken, {
          httpOnly: true,
-         // secure: true, // nanti bisa dimainin di frontend
+         secure: true, // nanti bisa dimainin di frontend
          maxAge: 60 * 60 * 24 * 30 * 1000,
          sameSite: "none",
       });

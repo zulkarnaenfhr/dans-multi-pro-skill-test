@@ -4,6 +4,7 @@ import Users from "./models/userModels.js";
 import userRouter from "./routers/userRouter.js";
 import cookieParser from "cookie-parser";
 import JobModel from "./models/jobModels.js";
+import cors from "cors";
 
 import dotenv from "dotenv";
 import jobRouter from "./routers/jobRouter.js";
@@ -11,6 +12,13 @@ import jobRouter from "./routers/jobRouter.js";
 dotenv.config();
 
 const app = express();
+app.use(
+   cors({
+      methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+      credentials: true,
+      origin: ["http://localhost:3000"],
+   })
+);
 
 try {
    await db.authenticate();

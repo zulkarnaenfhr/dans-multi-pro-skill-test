@@ -3,8 +3,15 @@ import jwt from "jsonwebtoken";
 
 export const refreshToken = async (req, res) => {
    try {
-      const refreshToken = req.query.refreshToken;
+      console.log(req.headers);
+      const refreshToken = req.headers.cookie
+         .split(";")
+         .map((cookie) => cookie.trim())
+         .find((cookie) => cookie.startsWith("refreshToken="))
+         ?.split("=")[1];
+
       if (!refreshToken) {
+         res.clearCookie("refreshToken");
          res.sendStatus(401);
          return;
       }
