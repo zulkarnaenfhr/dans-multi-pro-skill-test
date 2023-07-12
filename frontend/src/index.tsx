@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import DansJob from "./DansJob";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./global.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(

@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 export const getAllJobs = async (req, res) => {
    try {
       const { description, location, full_time, page } = req.query;
+      console.log(req.query);
 
       let pageBaru = page;
       if (page === undefined || page === "") {
@@ -30,7 +31,7 @@ export const getAllJobs = async (req, res) => {
 
       if (full_time) {
          if (full_time === "true") {
-            searhCriteria.type = {
+            searchCriteria.type = {
                [Op.like]: "Full Time",
             };
          } else {
