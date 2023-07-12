@@ -7,6 +7,7 @@ const app = express();
 
 try {
    await db.authenticate();
+   await Users.sync();
    console.log("Database Online");
 } catch (error) {
    console.log(error);

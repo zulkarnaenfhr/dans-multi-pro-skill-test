@@ -9,14 +9,13 @@ const Users = db.define(
       username: {
          type: DataTypes.STRING,
          allowNull: false,
-         primaryKey: true,
          unique: true,
       },
       password: {
          type: DataTypes.STRING,
          allowNull: false,
       },
-      token: {
+      refresh_token: {
          type: DataTypes.STRING,
       },
       token_expired_at: {

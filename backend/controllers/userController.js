@@ -1,5 +1,10 @@
 import Users from "../models/userModels.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const getUsers = async (req, res) => {
    try {
@@ -44,6 +49,66 @@ export const registerUsers = async (req, res) => {
       res.status(500).json({
          msg: "Register Failed",
       });
+      return;
+   }
+};
+
+export const loginUser = async (req, res) => {
+   try {
+      const user = await Users.findOne({
+         where: {
+            username: req.body.username,
+         },
+      });
+
+      if (!user) {
+         res.status(404).json({
+            msg: "Sorry, Wrong Username ",
+         });
+         return;
+      }
+
+      const match = await bcrypt.compare(req.body.password, user.password);
+
+      if (!match) {
+         res.status(403).json({ msg: "Sorry, Wrong  Password" });
+         return;
+      }
+
+      console.log(process.env.ACCESS_TOKEN_SECRET);
+      // console.log(match);
+
+      const userId = user.id;
+      const usernameId = user.username;
+
+      const accessToken = jwt.sign({ userId, usernameId }, process.env.ACCESS_TOKEN_SECRET, {
+         expiresIn: "15s",
+      });
+
+      console.log(accessToken);
+
+      const refreshToken = jwt.sign({ userId, usernameId }, process.env.REFRESH_TOKEN_SECRET, {
+         expiresIn: "1d",
+      });
+      console.log(refreshToken);
+
+      await Users.update(
+         {
+            refresh_token: refreshToken,
+         },
+         {
+            where: {
+               username: usernameId,
+            },
+         }
+      );
+
+      res.status(200).json({ msg: accessToken, refreshToken: refreshToken });
+
+      return;
+   } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: error });
       return;
    }
 };
