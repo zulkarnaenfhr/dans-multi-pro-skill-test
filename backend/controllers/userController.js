@@ -75,9 +75,6 @@ export const loginUser = async (req, res) => {
          return;
       }
 
-      console.log(process.env.ACCESS_TOKEN_SECRET);
-      // console.log(match);
-
       const userId = user.id;
       const usernameId = user.username;
 
@@ -85,12 +82,9 @@ export const loginUser = async (req, res) => {
          expiresIn: "15s",
       });
 
-      console.log(accessToken);
-
       const refreshToken = jwt.sign({ userId, usernameId }, process.env.REFRESH_TOKEN_SECRET, {
          expiresIn: "1d",
       });
-      console.log(refreshToken);
 
       await Users.update(
          {
@@ -103,11 +97,64 @@ export const loginUser = async (req, res) => {
          }
       );
 
+      await res.cookie("refreshToken", refreshToken, {
+         httpOnly: true,
+         // secure: true, // nanti bisa dimainin di frontend
+         maxAge: 60 * 60 * 24 * 30 * 1000,
+         sameSite: "none",
+      });
+
       res.status(200).json({ msg: accessToken, refreshToken: refreshToken });
 
       return;
    } catch (error) {
-      console.log(error);
+      res.status(500).json({ msg: error });
+      return;
+   }
+};
+
+export const logoutUser = async (req, res) => {
+   try {
+      const refreshToken = req.cookies.refreshToken;
+      console.log(refreshToken);
+
+      if (!refreshToken) {
+         res.clearCookie("refreshToken");
+         res.status(400).json({
+            msg: "Cookie not found",
+         });
+         return;
+      }
+
+      const user = await Users.findOne({
+         where: {
+            refresh_token: refreshToken,
+         },
+      });
+
+      if (!user) {
+         res.clearCookie("refreshToken");
+         res.status(404).json({
+            msg: "Sorry, Wrong Username ",
+         });
+         return;
+      }
+
+      const userId = user.id;
+
+      await Users.update(
+         { refresh_token: null },
+         {
+            where: {
+               id: userId,
+            },
+         }
+      );
+
+      res.clearCookie("refreshToken");
+      res.status(200).json({ msg: "Berhasil Logout" });
+      return;
+   } catch (error) {
       res.status(500).json({ msg: error });
       return;
    }
