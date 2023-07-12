@@ -4,7 +4,6 @@ import { Op } from "sequelize";
 export const getAllJobs = async (req, res) => {
    try {
       const { description, location, full_time, page } = req.query;
-      console.log(req.query);
 
       let pageBaru = page;
       if (page === undefined || page === "") {
@@ -49,20 +48,18 @@ export const getAllJobs = async (req, res) => {
 
       const jumlahPage = Math.ceil(joblist.length / resultsPerPage);
 
-      console.log(jumlahPage);
-
       let hasilJumlahPerPage = 0;
 
       if (page != jumlahPage) {
-         hasilJumlahPerPage = resultsPerPage;
+         hasilJumlahPerPage = resultsPerPage * page;
       } else {
-         hasilJumlahPerPage = joblist.length - offset;
+         hasilJumlahPerPage = joblist.length;
       }
 
       res.status(200).json({
          jumlahPage: jumlahPage,
          jumlahData: joblist.length,
-         data: joblist.slice(offset, offset + hasilJumlahPerPage),
+         data: joblist.slice(0, hasilJumlahPerPage),
       });
    } catch (error) {
       console.log(error);

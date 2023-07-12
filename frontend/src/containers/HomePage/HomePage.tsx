@@ -6,6 +6,7 @@ import axios from "axios";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import styles from "./HomePage.module.css";
 import { Row, Col } from "react-bootstrap";
+import { formatDistanceToNow, parseISO } from "date-fns";
 
 interface CheckboxChangeEvent {
    target: {
@@ -15,17 +16,16 @@ interface CheckboxChangeEvent {
 
 function HomePage() {
    let useEffectCall = 0;
-   const [page, setPage] = useState(1);
    const [token, setToken] = useState("");
    const [expire, setExpire] = useState("");
-   const [jobData, setJobData] = useState("");
+   const [jobData, setJobData] = useState<any>({});
    const [loading, setLoading] = useState(true);
 
    const [queryParams, setQueryParams] = useState({
       description: "",
       location: "",
       full_time: true,
-      page: page,
+      page: 1,
    });
 
    useEffect(() => {
@@ -86,8 +86,9 @@ function HomePage() {
    );
 
    const getJobs = async () => {
+      console.log(queryParams);
+
       const responseData = await axiosJWT.get(`http://localhost:5000/api/jobs`, { params: queryParams });
-      console.log(responseData.data);
 
       setJobData(responseData.data);
       setLoading(false);
@@ -100,11 +101,30 @@ function HomePage() {
       }));
    };
 
+   const handlePageChange = async () => {
+      await setQueryParams((prevParams) => ({
+         ...prevParams,
+         page: queryParams.page + 1,
+      }));
+   };
+
+   useEffect(() => {
+      getJobs();
+   }, [queryParams]);
+
    const handleFormChange = (event: any) => {
       setQueryParams((prevParams) => ({
          ...prevParams,
          [event.target.name]: event.target.value,
       }));
+   };
+
+   const dateFormatter = (apiDate: string) => {
+      const date = new Date(apiDate);
+
+      const formattedDate = formatDistanceToNow(date, { addSuffix: true });
+
+      return formattedDate.slice(5, formattedDate.length);
    };
 
    return (
@@ -172,6 +192,67 @@ function HomePage() {
                   </Row>
                </Col>
             </Row>
+
+            <div className={styles["Homepage-JobList-Parent-Container"]}>
+               <div className={styles["Homepage-JobList-Container"]}>
+                  <div className={styles["Homepage-JobList-Content-Container"]}>
+                     <h1 className={styles["Homepage-JobList-Title"]}>Job List</h1>
+                     {loading ? (
+                        <p>Loading...</p>
+                     ) : (
+                        <div>
+                           {jobData.data.map((data: any) => (
+                              <Row className={styles["jobsData-line"]}>
+                                 <Col
+                                    md={10}
+                                    style={{
+                                       display: "flex",
+                                       alignItems: "center",
+                                    }}
+                                 >
+                                    <div>
+                                       <p className={styles["jobsData-line-title"]}>{data.title}</p>
+                                       <p
+                                          style={{
+                                             marginBottom: "unset",
+                                          }}
+                                       >
+                                          <span className={styles["jobsData-line-company"]}>{data.company} -</span> <span className={styles["jobsData-line-type"]}>{data.type}</span>
+                                       </p>
+                                    </div>
+                                 </Col>
+                                 <Col
+                                    md={2}
+                                    style={{
+                                       display: "flex",
+                                       alignItems: "center",
+                                       justifyContent: "right",
+                                    }}
+                                 >
+                                    <div>
+                                       <p className={styles["jobData-line-location"]}>{data.location}</p>
+                                       <p className={styles["jobData-line-date"]}>{dateFormatter(data.created_at)}</p>
+                                    </div>
+                                 </Col>
+                              </Row>
+                           ))}
+                        </div>
+                     )}
+                     {queryParams.page != jobData?.jumlahPage ? (
+                        <button
+                           onClick={() => {
+                              handlePageChange();
+                           }}
+                           className={styles["jobData-line-addMore"]}
+                        >
+                           More Jobs
+                        </button>
+                     ) : (
+                        ""
+                     )}
+                  </div>
+               </div>
+            </div>
          </div>
       </div>
    );
