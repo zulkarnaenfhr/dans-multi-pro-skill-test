@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 
 export const refreshToken = async (req, res) => {
    try {
-      console.log(req.headers);
       const refreshToken = req.headers.cookie
          .split(";")
          .map((cookie) => cookie.trim())

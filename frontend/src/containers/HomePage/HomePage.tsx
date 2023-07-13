@@ -7,6 +7,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import styles from "./HomePage.module.css";
 import { Row, Col } from "react-bootstrap";
 import { formatDistanceToNow, parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 interface CheckboxChangeEvent {
    target: {
@@ -15,6 +16,8 @@ interface CheckboxChangeEvent {
 }
 
 function HomePage() {
+   const navigate = useNavigate();
+
    let useEffectCall = 0;
    const [token, setToken] = useState("");
    const [expire, setExpire] = useState("");
@@ -27,6 +30,24 @@ function HomePage() {
       full_time: true,
       page: 1,
    });
+
+   const logout = () => {
+      try {
+         instance
+            .delete("/logout", { withCredentials: true })
+            .then(async (response) => {
+               navigate("/login");
+               return;
+            })
+            .catch(async (error) => {
+               navigate("/login");
+               return;
+            });
+      } catch (error) {
+         navigate("/login");
+         return;
+      }
+   };
 
    useEffect(() => {
       if (useEffectCall > 0) return;
@@ -47,7 +68,8 @@ function HomePage() {
                getJobs();
             })
             .catch(async (error) => {
-               console.log(error);
+               navigate("/login");
+               return;
             });
       } catch (error) {
          Swal.fire({
@@ -57,8 +79,8 @@ function HomePage() {
             icon: "error",
             iconColor: "#002145",
          }).then((result) => {
-            /* Read more about handling dismissals below */
-            // Logout();
+            navigate("/login");
+            return;
          });
       }
    };
@@ -81,17 +103,22 @@ function HomePage() {
          return config;
       },
       (error) => {
-         return Promise.reject(error);
+         // return Promise.reject(error);
+         navigate("/login");
+         return;
       }
    );
 
    const getJobs = async () => {
-      console.log(queryParams);
+      try {
+         const responseData = await axiosJWT.get(`http://localhost:5000/api/jobs`, { params: queryParams });
 
-      const responseData = await axiosJWT.get(`http://localhost:5000/api/jobs`, { params: queryParams });
-
-      setJobData(responseData.data);
-      setLoading(false);
+         setJobData(responseData.data);
+         setLoading(false);
+      } catch (error) {
+         navigate("/login");
+         return;
+      }
    };
 
    const handleCheckboxChange = (event: CheckboxChangeEvent) => {
@@ -134,7 +161,7 @@ function HomePage() {
             <Row
                className={styles["Homepage-SubNavbar"]}
                style={{
-                  marginTop: "20px",
+                  paddingTop: "20px",
                }}
             >
                <Col md={4}>
@@ -181,13 +208,6 @@ function HomePage() {
                         <button onClick={getJobs} className={styles["HomePage-SubNavbar-Button"]}>
                            Search
                         </button>
-                        <button
-                           onClick={() => {
-                              console.log(queryParams);
-                           }}
-                        >
-                           cek
-                        </button>
                      </Col>
                   </Row>
                </Col>
@@ -211,7 +231,14 @@ function HomePage() {
                                     }}
                                  >
                                     <div>
-                                       <p className={styles["jobsData-line-title"]}>{data.title}</p>
+                                       <p
+                                          onClick={() => {
+                                             navigate(`/${data.id}`);
+                                          }}
+                                          className={styles["jobsData-line-title"]}
+                                       >
+                                          {data.title}
+                                       </p>
                                        <p
                                           style={{
                                              marginBottom: "unset",

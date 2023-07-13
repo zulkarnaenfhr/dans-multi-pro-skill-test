@@ -1,6 +1,6 @@
 .Homepage-Container {
    background-color: #fafafa;
-   height: 100vh;
+   min-height: calc(100vh - 90px);
 }
 
 .Homepage-SubNavbar {
@@ -82,6 +82,7 @@
    color: #4887bd;
    font-size: 18px;
    margin-bottom: unset;
+   cursor: pointer;
 }
 
 .jobsData-line-company {

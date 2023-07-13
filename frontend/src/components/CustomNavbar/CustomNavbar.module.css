@@ -6,6 +6,26 @@
    padding: 20px;
 }
 
-#CustomNavbar > h1 {
+.CustomNavbar-title {
    color: white;
+}
+
+.CustomNavbar-button {
+   width: 100px;
+   height: 40px;
+   border-radius: 10px;
+   border: none;
+   font-size: 19px;
+   transition: all 0.4s ease-in-out;
+   position: relative;
+   bottom: 3px;
+}
+
+.CustomNavbar-button:hover {
+   width: 100px;
+   height: 40px;
+   border-radius: 10px;
+   border: 1px solid #f0f0f0;
+   background-color: transparent;
+   color: #f0f0f0;
 }

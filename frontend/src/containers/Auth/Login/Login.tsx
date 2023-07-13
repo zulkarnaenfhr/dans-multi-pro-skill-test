@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./Login.module.css";
 import { instance } from "../axiosInstance";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Login() {
    const navigate = useNavigate();
@@ -26,6 +27,13 @@ function Login() {
          })
          .catch(function (error) {
             console.error(error);
+            Swal.fire({
+               title: `Username or password is wrong, try again!`,
+               timer: 3000,
+               timerProgressBar: true,
+               icon: "error",
+               iconColor: "#002145",
+            });
          });
    };
 

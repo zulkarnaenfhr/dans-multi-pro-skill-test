@@ -62,7 +62,27 @@ export const getAllJobs = async (req, res) => {
          data: joblist.slice(0, hasilJumlahPerPage),
       });
    } catch (error) {
-      console.log(error);
+      res.status(500).json({ error: "Internal server error" });
+      return;
+   }
+};
+
+export const detailJob = async (req, res) => {
+   try {
+      const job = await JobModel.findOne({
+         where: {
+            id: req.params.id,
+         },
+      });
+
+      if (!job) {
+         res.status(404).json({ msg: "Job ID Not Found" });
+         return;
+      }
+
+      res.status(200).json(job);
+      return;
+   } catch (error) {
       res.status(500).json({ error: "Internal server error" });
       return;
    }
